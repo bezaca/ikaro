@@ -2,14 +2,16 @@ from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.select import Select
 from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.firefox.options import Options
 
 # Initial Configurations
+firefox_options = Options()
+firefox_options.add_argument("--headless")
 
 URL = 'https://sia.unal.edu.co/ServiciosApp/facespublico/public/servicioPublico.jsf?taskflowId=task-flow-AC_CatalogoAsignaturas'
-driver = webdriver.Firefox()
+driver = webdriver.Firefox(options=firefox_options)
 
 # helpers and functions
-
 
 def waiting_for_cursor(function):
     def wrapper(*args, **kwargs):
@@ -39,6 +41,18 @@ def click_button(xpath_value: str):
     return button.click()
 
 
+@waiting_for_cursor
+def get_source_code(xpath_value: str):
+    """
+    Create an HTML file based on a select object.
+    """
+    element = driver.find_element_by_xpath("//div[@id='pt1:r1:0:t4']")
+    source_code = element.get_attribute('innerHTML')
+
+    with open('source.html', 'wb') as file:
+        file.write(source_code.encode('utf-8'))
+
+
 # Selecting search parameters
 driver.get(URL)
 
@@ -66,12 +80,6 @@ faculty = selecting_element_by_id("pt1:r1:0:soc2::content", 1)
 syllabus = selecting_element_by_id("pt1:r1:0:soc3::content", 1)
 
 click_button("//div[@id='pt1:r1:0:cb1']")
+get_source_code("//div[@id='pt1:r1:0:t4']")
 
-
-
-
-
-
-
-
-
+driver.quit()
