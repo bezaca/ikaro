@@ -46,7 +46,7 @@ def get_source_code(xpath_value: str):
     """
     Create an HTML file based on a select object.
     """
-    element = driver.find_element_by_xpath("//div[@id='pt1:r1:0:t4']")
+    element = driver.find_element_by_xpath(xpath_value)
     source_code = element.get_attribute('innerHTML')
 
     with open('source.html', 'wb') as file:
